@@ -1,7 +1,10 @@
 package model
 
 import (
+	"errors"
+
 	"github.com/kamva/mgm/v3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User :
@@ -19,4 +22,13 @@ func NewUser(email, password, name string) *User {
 		Password: password,
 		Name:     name,
 	}
+}
+
+// HashPassword :
+func (u *User) HashPassword(plain string) (string, error) {
+	if plain == "" {
+		return "", errors.New("password should not be empty")
+	}
+	h, err := bcrypt.GenerateFromPassword([]byte(plain), bcrypt.DefaultCost)
+	return string(h), err
 }
